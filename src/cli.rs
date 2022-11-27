@@ -57,6 +57,10 @@ impl Command {
                 cargo_toml
                     .write_version(version.into())
                     .expect("Failed to write version");
+
+                cargo_toml
+                    .run_cargo_check()
+                    .expect("Failed to run `cargo check`");
             }
         }
     }

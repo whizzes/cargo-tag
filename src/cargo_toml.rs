@@ -2,6 +2,7 @@ use std::env::current_dir;
 use std::fs::{read_to_string, OpenOptions};
 use std::io::Write;
 use std::path::PathBuf;
+use std::process::{Command, Stdio};
 
 use semver::Version as SemVer;
 use serde::Deserialize;
@@ -56,6 +57,16 @@ impl CargoToml {
             .open(&self.meta.path)?;
 
         file.write_all(document.to_string().as_bytes())?;
+        Ok(())
+    }
+
+    pub fn run_cargo_check(&self) -> Result<(), Box<dyn std::error::Error>> {
+        let mut cmd = Command::new("cargo");
+
+        cmd.arg("check");
+        cmd.stderr(Stdio::inherit());
+        cmd.status()?;
+
         Ok(())
     }
 }
