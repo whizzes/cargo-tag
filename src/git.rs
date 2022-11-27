@@ -1,6 +1,8 @@
 use std::env::current_dir;
 
-use git2::{BranchType, IndexAddOption, Repository, Signature, Tree};
+use git2::{IndexAddOption, Repository, Signature, Tree};
+
+use crate::version::Version;
 
 pub struct Git {
     email: String,
@@ -10,6 +12,9 @@ pub struct Git {
 }
 
 impl Git {
+    /// Opens the Git repository in the current working directory and uses the
+    /// provided `email`, `name` and `branch` to perform Git operations like
+    /// `commit` and `tag`.
     pub fn open(branch: &str, email: &str, name: &str) -> Result<Self, Box<dyn std::error::Error>> {
         let cwd = current_dir()?;
         let repo = Repository::open(cwd)?;
@@ -41,6 +46,18 @@ impl Git {
         Ok(())
     }
 
+    /// Creates a Git Tag with the provided `Version`
+    pub fn tag(&self, version: &Version, message: &str) -> Result<(), Box<dyn std::error::Error>> {
+        let tagger = self.signature()?;
+        let head = self.repo.head()?.peel_to_commit()?;
+        let obj = head.as_object();
+
+        self.repo
+            .tag(&version.to_string(), obj, &tagger, message, false)?;
+
+        Ok(())
+    }
+
     /// Creates a `Signature` using the instance's `email` and `name` along with
     /// the current time
     fn signature(&self) -> Result<Signature, Box<dyn std::error::Error>> {
@@ -49,16 +66,11 @@ impl Git {
         Ok(signature)
     }
 
-    /// Creates a Git tree where `Cargo.toml` and `Cargo.lock` are addedd to
-    /// the commit tree.
+    /// Creates a Git tree by adding all the files in the current repository
     fn tagging_tree(&self) -> Result<Tree, Box<dyn std::error::Error>> {
         let mut index = self.repo.index()?;
 
-        index.add_all(
-            ["Cargo.toml", "Cargo.lock"].iter(),
-            IndexAddOption::DEFAULT,
-            None,
-        )?;
+        index.add_all(["*"].iter(), IndexAddOption::DEFAULT, None)?;
 
         let tree = index.write_tree()?;
         let tree = self.repo.find_tree(tree)?;
