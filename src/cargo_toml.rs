@@ -9,16 +9,16 @@ const CARGO_TOML: &str = "Cargo.toml";
 /// A `Cargo.toml` file's representation as a struct
 #[derive(Debug, Deserialize)]
 pub struct CargoToml {
-    pub package: Package,
+    pub(crate) package: Package,
 }
 
 /// Representation of the `Cargo.toml` `package` section
 #[derive(Debug, Deserialize)]
 pub struct Package {
     /// Crate name
-    pub name: String,
+    pub(crate) name: String,
     /// Crate version
-    pub version: Version,
+    pub(crate) version: Version,
 }
 
 impl CargoToml {
