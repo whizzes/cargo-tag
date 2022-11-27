@@ -26,19 +26,24 @@ impl Version {
     fn bump(&mut self, digit: Digit) {
         match digit {
             Digit::Major => {
-                self.ver.major = self.ver.major + 1;
+                self.ver.major += 1;
                 self.ver.minor = 0;
                 self.ver.patch = 0;
             }
             Digit::Minor => {
-                self.ver.minor = self.ver.minor + 1;
+                self.ver.minor += 1;
                 self.ver.patch = 0;
             }
             Digit::Patch => {
-                self.ver.patch = self.ver.patch + 1;
+                self.ver.patch += 1;
             }
-            _ => {}
         }
+    }
+}
+
+impl From<Version> for SemVer {
+    fn from(ver: Version) -> Self {
+        ver.ver
     }
 }
 

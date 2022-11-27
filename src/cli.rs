@@ -54,7 +54,9 @@ impl Command {
                     _ => unreachable!(),
                 };
 
-                println!("{} => {}", cargo_toml.package.version, version.ver);
+                cargo_toml
+                    .write_version(version.into())
+                    .expect("Failed to write version");
             }
         }
     }

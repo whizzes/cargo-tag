@@ -18,3 +18,4 @@ clap = { version = "4.0.27", features = ["derive"] }
 semver = { version = "1.0.14", features = ["serde"] }
 serde = { version = "1.0.147", features = ["derive"] }
 toml = "0.5.9"
+toml_edit = "0.15.0"
