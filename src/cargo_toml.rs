@@ -9,6 +9,7 @@ use serde::Deserialize;
 
 const CARGO_TOML: &str = "Cargo.toml";
 
+/// Metadata for the `Cargo.toml` file loaded
 #[derive(Debug, Default)]
 pub struct Metadata {
     path: PathBuf,
@@ -60,6 +61,8 @@ impl CargoToml {
         Ok(())
     }
 
+    /// Executes `cargo check`. This is useful after updating the version in
+    /// the `Cargo.toml` file to ensure `Cargo.lock` has the correct version.
     pub fn run_cargo_check(&self) -> Result<(), Box<dyn std::error::Error>> {
         let mut cmd = Command::new("cargo");
 

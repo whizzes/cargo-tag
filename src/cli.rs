@@ -41,7 +41,7 @@ impl Command {
             Command::Current => {
                 let cargo_toml = CargoToml::open().unwrap();
 
-                print!("{:#?}", cargo_toml);
+                println!("{}", cargo_toml.package.version);
             }
             Command::Minor | Command::Major | Command::Patch => {
                 let cargo_toml = CargoToml::open().unwrap();
