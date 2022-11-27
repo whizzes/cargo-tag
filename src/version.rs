@@ -1,3 +1,5 @@
+use std::fmt;
+
 use semver::Version as SemVer;
 
 pub struct Version {
@@ -41,9 +43,9 @@ impl Version {
     }
 }
 
-impl ToString for Version {
-    fn to_string(&self) -> String {
-        self.ver.to_string()
+impl fmt::Display for Version {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.ver)
     }
 }
 

@@ -64,7 +64,7 @@ impl Command {
                     .run_cargo_check()
                     .expect("Failed to run `cargo check`");
 
-                repository.commit(&format!("chore: bump version to {}", version.to_string()))?;
+                repository.commit(&format!("chore: bump version to {}", version))?;
                 repository.tag(&version, "chore: bump version to {}")?;
             }
         }
