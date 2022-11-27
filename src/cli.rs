@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 
 use crate::cargo_toml::CargoToml;
+use crate::git::Git;
 use crate::version::Version;
 
 #[derive(Parser)]
@@ -36,15 +37,16 @@ pub enum Command {
 }
 
 impl Command {
-    pub fn exec(&self) {
+    pub fn exec(&self) -> Result<(), Box<dyn std::error::Error>> {
         match *self {
             Command::Current => {
                 let cargo_toml = CargoToml::open().unwrap();
 
                 println!("{}", cargo_toml.package.version);
             }
-            Command::Minor | Command::Major | Command::Patch => {
-                let cargo_toml = CargoToml::open().unwrap();
+            Command::Major | Command::Minor | Command::Patch => {
+                let cargo_toml = CargoToml::open()?;
+                let repository = Git::open("main", "estebanborai@gmail.com", "Esteban Borai")?;
                 let mut version = Version::from(&cargo_toml.package.version);
 
                 match self {
@@ -55,13 +57,17 @@ impl Command {
                 };
 
                 cargo_toml
-                    .write_version(version.into())
+                    .write_version(&version)
                     .expect("Failed to write version");
 
                 cargo_toml
                     .run_cargo_check()
                     .expect("Failed to run `cargo check`");
+
+                repository.commit(&format!("chore: bump version to {}", version.to_string()))?;
             }
         }
+
+        Ok(())
     }
 }

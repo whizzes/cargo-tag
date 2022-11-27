@@ -7,6 +7,8 @@ use std::process::{Command, Stdio};
 use semver::Version as SemVer;
 use serde::Deserialize;
 
+use crate::version::Version;
+
 const CARGO_TOML: &str = "Cargo.toml";
 
 /// Metadata for the `Cargo.toml` file loaded
@@ -46,11 +48,11 @@ impl CargoToml {
     }
 
     /// Update's current `Cargo.toml` version
-    pub fn write_version(&self, version: SemVer) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn write_version(&self, version: &Version) -> Result<(), Box<dyn std::error::Error>> {
         let file_str = read_to_string(&self.meta.path)?;
         let mut document = file_str.parse::<toml_edit::Document>()?;
 
-        document["package"]["version"] = toml_edit::value(version.to_string());
+        document["package"]["version"] = toml_edit::value(version.ver.to_string());
 
         let mut file = OpenOptions::new()
             .write(true)

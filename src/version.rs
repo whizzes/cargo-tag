@@ -41,6 +41,12 @@ impl Version {
     }
 }
 
+impl ToString for Version {
+    fn to_string(&self) -> String {
+        self.ver.to_string()
+    }
+}
+
 impl From<Version> for SemVer {
     fn from(ver: Version) -> Self {
         ver.ver
