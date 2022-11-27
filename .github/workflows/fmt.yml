@@ -7,15 +7,8 @@ on:
 
 jobs:
   fmt:
-    name: Runs "cargo fmt" on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [
-          ubuntu-latest,
-          windows-latest,
-          macOS-latest
-        ]
+    name: Runs "cargo fmt"
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
