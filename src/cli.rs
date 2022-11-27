@@ -4,8 +4,19 @@ use crate::cargo_toml::CargoToml;
 use crate::git::Git;
 use crate::version::Version;
 
+const ABOUT: &str = r#"Cargo plugin to bump crate's versions and Git tag them
+for release.
+
+"cargo tag" helps to automate the process of bumping versions
+similar to how "npm version" does.
+
+When bumping versions with "cargo tag", the
+Cargo.toml and Cargo.lock files are updated with the new version, then a Git
+commit and a Git tag are both created."#;
+
 #[derive(Parser)]
-#[command(author, version, about, long_about = Some("Cargo plugin to tag crate version"))]
+#[command(name = "cargo-tag", author, version, about, long_about = Some(ABOUT))]
+#[command(next_line_help = true)]
 pub struct Cli {
     #[command(subcommand)]
     pub(crate) command: Option<Command>,
@@ -16,8 +27,7 @@ impl Cli {
         let cli = Cli::parse();
 
         if let Some(cmd) = cli.command {
-            cmd.exec();
-            return Ok(());
+            return cmd.exec();
         }
 
         Ok(())
@@ -28,11 +38,11 @@ impl Cli {
 pub enum Command {
     /// Print current package version
     Current,
-    /// Bumps crate's minor version
+    /// Bumps crate's minor version and create a git tag
     Minor,
-    /// Bumps crate's major version
+    /// Bumps crate's major version and create a git tag
     Major,
-    /// Bumps crate's patch version
+    /// Bumps crate's patch version and create a git tag
     Patch,
 }
 
@@ -58,14 +68,19 @@ impl Command {
 
                 cargo_toml
                     .write_version(&version)
-                    .expect("Failed to write version");
+                    .expect("Failed to write version to Cargo.toml");
 
                 cargo_toml
                     .run_cargo_check()
                     .expect("Failed to run `cargo check`");
 
-                repository.commit(&format!("chore: bump version to {}", version))?;
-                repository.tag(&version, "chore: bump version to {}")?;
+                repository
+                    .commit(&format!("chore: bump version to {}", version))
+                    .expect("Failed to commit files");
+
+                repository
+                    .tag(&version, "chore: bump version to {}")
+                    .expect("Failed to create Git tag");
             }
         }
 

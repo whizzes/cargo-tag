@@ -4,6 +4,7 @@ use git2::{IndexAddOption, Repository, Signature, Tree};
 
 use crate::version::Version;
 
+/// Performs Git related operations in the crate's repository
 pub struct Git {
     email: String,
     name: String,

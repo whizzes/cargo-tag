@@ -3,6 +3,16 @@ name = "cargo-tag"
 version = "0.1.0"
 edition = "2021"
 
+license = "MIT"
+description = "Cargo plugin to bump crate's versions and Git tag them for release"
+keywords = ["cargo", "tag", "git", "release"]
+categories = ["command-line-utilities", "development-tools"]
+include = ["src", "README.md"]
+homepage = "https://github.com/EstebanBorai/cargo-tag"
+documentation = "https://github.com/EstebanBorai/cargo-tag"
+repository = "https://github.com/EstebanBorai/cargo-tag"
+readme = "README.md"
+
 [lib]
 name = "cargo_tag"
 path = "src/lib.rs"
