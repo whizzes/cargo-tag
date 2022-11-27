@@ -7,11 +7,11 @@
 
 <div align="center">
 
-  [![Crates.io](https://img.shields.io/crates/v/local-ip-address.svg)](https://crates.io/crates/local-ip-address)
-  [![Documentation](https://docs.rs/local-ip-address/badge.svg)](https://docs.rs/local-ip-address)
-  ![Build](https://github.com/EstebanBorai/local-ip-address/workflows/build/badge.svg)
-  ![Clippy](https://github.com/EstebanBorai/local-ip-address/workflows/clippy/badge.svg)
-  ![Formatter](https://github.com/EstebanBorai/local-ip-address/workflows/fmt/badge.svg)
+  [![Crates.io](https://img.shields.io/crates/v/cargo-tag.svg)](https://crates.io/crates/cargo-tag)
+  [![Documentation](https://docs.rs/cargo-tag/badge.svg)](https://docs.rs/cargo-tag)
+  ![Build](https://github.com/EstebanBorai/cargo-tag/workflows/build/badge.svg)
+  ![Clippy](https://github.com/EstebanBorai/cargo-tag/workflows/clippy/badge.svg)
+  ![Formatter](https://github.com/EstebanBorai/cargo-tag/workflows/fmt/badge.svg)
 
 </div>
 
@@ -22,4 +22,4 @@ an issue or just by starting this project.
 
 ## License
 
-Distributed under the terms of both the MIT license and the Apache License (Version 2.0)
+Distributed under the terms of both the MIT license
