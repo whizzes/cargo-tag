@@ -15,22 +15,19 @@ Cargo.toml and Cargo.lock files are updated with the new version, then a Git
 commit and a Git tag are both created."#;
 
 #[derive(Parser)]
-#[command(name = "cargo-tag", author, version, about, long_about = Some(ABOUT))]
+#[command(bin_name = "cargo")]
 #[command(next_line_help = true)]
-pub struct Cli {
+#[command(name = "cargo", author, version, about, long_about = Some(ABOUT))]
+pub enum Cli {
     #[command(subcommand)]
-    pub(crate) command: Option<Command>,
+    Tag(Command),
 }
 
 impl Cli {
     pub fn exec(self) -> Result<(), Box<dyn std::error::Error>> {
-        let cli = Cli::parse();
-
-        if let Some(cmd) = cli.command {
-            return cmd.exec();
+        match self {
+            Self::Tag(cmd) => cmd.exec(),
         }
-
-        Ok(())
     }
 }
 
