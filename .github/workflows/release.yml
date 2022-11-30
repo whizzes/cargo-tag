@@ -31,9 +31,19 @@ jobs:
       - name: Bumps version
         run: cargo tag ${{ github.event.inputs.release_type }}
 
-      - name: Push changes to remote
-        run:
-          git push origin main
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4.2.2
+        id: create_pull_request
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release
+          title: Release
+
+      - name: Check Outputs
+        if: ${{ steps.create_pull_request.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
 
   # create-release:
   #   name: Create Release
