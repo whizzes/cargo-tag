@@ -29,7 +29,7 @@ jobs:
         run: cargo install --path .
 
       - name: Bumps version
-        run: cargo tag github.event.inputs.release_type
+        run: cargo tag ${{ github.event.inputs.release_type }}
 
       - name: Push changes to remote
         run:
