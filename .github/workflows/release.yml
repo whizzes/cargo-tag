@@ -36,8 +36,10 @@ jobs:
         id: create_pull_request
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release
-          title: Release
+          commiter: 'Esteban Borai <estebanborai@gmail.com>'
+          author: 'Esteban Borai <estebanborai@gmail.com>'
+          branch: release/${{ github.ref }}
+          title: Release ${{ github.ref }}
           base: main
 
       - name: Check Outputs
