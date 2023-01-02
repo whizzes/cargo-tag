@@ -27,6 +27,6 @@ path = "src/bin/main.rs"
 clap = { version = "4.0.32", features = ["derive"] }
 git2 = { version = "0.15.0" }
 semver = { version = "1.0.16", features = ["serde"] }
-serde = { version = "1.0.151", features = ["derive"] }
+serde = { version = "1.0.152", features = ["derive"] }
 toml = "0.5.10"
 toml_edit = "0.15.0"
