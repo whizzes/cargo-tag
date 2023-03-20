@@ -29,4 +29,4 @@ git2 = { version = "0.16.1" }
 semver = { version = "1.0.17", features = ["serde"] }
 serde = { version = "1.0.158", features = ["derive"] }
 toml = "0.7.2"
-toml_edit = "0.19.5"
+toml_edit = "0.19.7"
