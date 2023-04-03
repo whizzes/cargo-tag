@@ -25,7 +25,7 @@ path = "src/bin/main.rs"
 
 [dependencies]
 clap = { version = "4.1.11", features = ["derive"] }
-git2 = { version = "0.16.1" }
+git2 = { version = "0.17.0" }
 semver = { version = "1.0.17", features = ["serde"] }
 serde = { version = "1.0.159", features = ["derive"] }
 toml = "0.7.3"
