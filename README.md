@@ -9,9 +9,9 @@
 
   [![Crates.io](https://img.shields.io/crates/v/cargo-tag.svg)](https://crates.io/crates/cargo-tag)
   [![Documentation](https://docs.rs/cargo-tag/badge.svg)](https://docs.rs/cargo-tag)
-  ![Build](https://github.com/EstebanBorai/cargo-tag/workflows/build/badge.svg)
-  ![Clippy](https://github.com/EstebanBorai/cargo-tag/workflows/clippy/badge.svg)
-  ![Formatter](https://github.com/EstebanBorai/cargo-tag/workflows/fmt/badge.svg)
+  ![Build](https://github.com/whizzes/cargo-tag/workflows/build/badge.svg)
+  ![Clippy](https://github.com/whizzes/cargo-tag/workflows/clippy/badge.svg)
+  ![Formatter](https://github.com/whizzes/cargo-tag/workflows/fmt/badge.svg)
 
 </div>
 
