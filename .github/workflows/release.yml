@@ -1,85 +1,43 @@
 name: release
 
 on:
-  workflow_dispatch:
-    inputs:
-      release_type:
-        type: choice
-        required: true
-        description: Release type for SemVer
-        options:
-          - major
-          - minor
-          - patch
+  push:
+    tags:
+      - 'v*'
 
 jobs:
-  bump-version:
-    name: Bump Crate Version
+  create-release:
+    name: Create Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Project
-        uses: actions/checkout@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: ''
+          draft: false
+          prerelease: false
+
+  publish-crate:
+    name: Publish to crates.io
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
 
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
+      - run: cargo login ${CRATES_IO_TOKEN}
+        env:
+          CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
 
-      - name: Install "cargo tag"
-        run: cargo install --path .
-
-      - name: Bumps version
-        run: cargo tag ${{ github.event.inputs.release_type }}
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4.2.2
-        id: create_pull_request
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commiter: 'Esteban Borai <estebanborai@gmail.com>'
-          author: 'Esteban Borai <estebanborai@gmail.com>'
-          branch: release/${{ github.ref }}
-          title: Release ${{ github.ref }}
-          base: main
-
-      - name: Check Outputs
-        if: ${{ steps.create_pull_request.outputs.pull-request-number }}
-        run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
-
-  # create-release:
-  #   name: Create Release
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
-
-  #     - name: Create Release
-  #       id: create_release
-  #       uses: actions/create-release@v1
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         tag_name: ${{ github.ref }}
-  #         release_name: ${{ github.ref }}
-  #         body: ''
-  #         draft: false
-  #         prerelease: false
-
-  # publish-crate:
-  #   name: Publish to crates.io
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v1
-
-  #     - uses: actions-rs/toolchain@v1
-  #       with:
-  #         profile: minimal
-  #         toolchain: stable
-  #     - run: cargo login ${CRATES_IO_TOKEN}
-  #       env:
-  #         CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
-
-  #     - name: publish crate
-  #       run: cargo publish
+      - name: publish crate
+        run: cargo publish
