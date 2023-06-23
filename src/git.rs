@@ -13,6 +13,18 @@ pub struct Git {
 }
 
 impl Git {
+    /// Creates `Git` client from environmesnt variables
+    ///
+    /// # Panics
+    ///
+    /// If `CARGO_TAG_EMAIL` or `CARGO_TAG_NAME` is not set
+    pub fn from_env(branch: &str) -> Self {
+        let email = std::env::var("CARGO_TAG_EMAIL").expect("CARGO_TAG_EMAIL not set");
+        let name = std::env::var("CARGO_TAG_NAME").expect("CARGO_TAG_NAME not set");
+
+        Git::open(branch, &email, &name).expect("Failed to open Git repository")
+    }
+
     /// Opens the Git repository in the current working directory and uses the
     /// provided `email`, `name` and `branch` to perform Git operations like
     /// `commit` and `tag`.
