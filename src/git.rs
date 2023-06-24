@@ -1,6 +1,6 @@
 use std::env::current_dir;
 
-use git2::{IndexAddOption, Repository, Signature, Tree};
+use git2::{Config, IndexAddOption, Repository, Signature, Tree};
 
 use crate::version::Version;
 
@@ -13,28 +13,37 @@ pub struct Git {
 }
 
 impl Git {
-    /// Creates `Git` client from environmesnt variables
-    ///
-    /// # Panics
-    ///
-    /// If `CARGO_TAG_EMAIL` or `CARGO_TAG_NAME` is not set
-    pub fn from_env(branch: &str) -> Self {
-        let email = std::env::var("CARGO_TAG_EMAIL").expect("CARGO_TAG_EMAIL not set");
-        let name = std::env::var("CARGO_TAG_NAME").expect("CARGO_TAG_NAME not set");
-
-        Git::open(branch, &email, &name).expect("Failed to open Git repository")
-    }
-
-    /// Opens the Git repository in the current working directory and uses the
-    /// provided `email`, `name` and `branch` to perform Git operations like
-    /// `commit` and `tag`.
-    pub fn open(branch: &str, email: &str, name: &str) -> Result<Self, Box<dyn std::error::Error>> {
+    /// Opens the Git repository in the current working directory and
+    /// uses the provided `branch` to perform Git operations like
+    /// `commit` and `tag`. The `email` and `name` to be used are
+    /// retrieved from git config unless overridden by
+    /// `CARGO_TAG_EMAIL` and `CARGO_TAG_NAME` environment variables.
+    pub fn open(branch: &str) -> Result<Self, Box<dyn std::error::Error>> {
+        let cfg = Config::open_default()?;
         let cwd = current_dir()?;
         let repo = Repository::open(cwd)?;
 
+        let name = if let Ok(name) = std::env::var("CARGO_TAG_NAME") {
+            name
+        } else {
+            cfg.get_entry("user.name")?
+                .value()
+                .ok_or("user.name not utf8")?
+                .to_string()
+        };
+
+        let email = if let Ok(email) = std::env::var("CARGO_TAG_EMAIL") {
+            email
+        } else {
+            cfg.get_entry("user.email")?
+                .value()
+                .ok_or("user.email not utf8")?
+                .to_string()
+        };
+        
         Ok(Self {
-            email: email.into(),
-            name: name.into(),
+            email,
+            name,
             branch: branch.into(),
             repo,
         })

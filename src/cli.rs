@@ -53,7 +53,7 @@ impl Command {
             }
             Command::Major | Command::Minor | Command::Patch => {
                 let cargo_toml = CargoToml::open()?;
-                let repository = Git::from_env("main");
+                let repository = Git::open("main")?;
                 let mut version = Version::from(&cargo_toml.package.version);
 
                 match self {
