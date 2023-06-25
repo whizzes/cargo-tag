@@ -40,7 +40,7 @@ impl Git {
                 .ok_or("user.email not utf8")?
                 .to_string()
         };
-        
+
         Ok(Self {
             email,
             name,
