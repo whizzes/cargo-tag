@@ -1,6 +1,6 @@
 use std::env::current_dir;
 
-use git2::{IndexAddOption, Repository, Signature, Tree};
+use git2::{Config, IndexAddOption, Repository, Signature, Tree};
 
 use crate::version::Version;
 
@@ -13,7 +13,7 @@ pub struct Git {
 }
 
 impl Git {
-    /// Creates `Git` client from environmesnt variables
+    /// Creates `Git` client from environment variables
     ///
     /// # Panics
     ///
@@ -23,6 +23,23 @@ impl Git {
         let name = std::env::var("CARGO_TAG_NAME").expect("CARGO_TAG_NAME not set");
 
         Git::open(branch, &email, &name).expect("Failed to open Git repository")
+    }
+
+    /// Creates `Git` client from git config
+    ///
+    /// # Panics
+    ///
+    /// If `user.email` or `user.name` are not found
+    pub fn from_git_config(branch: &str) -> Self {
+        let cfg = Config::open_default().expect("Cannot open git config");
+
+        let email = cfg.get_entry("user.email").expect("user.email not found");
+        let email = email.value().expect("user.email not utf8");
+
+        let name = cfg.get_entry("user.name").expect("user.name not found");
+        let name = name.value().expect("user.name not utf8");
+
+        Git::open(branch, email, name).expect("Failed to open Git repository")
     }
 
     /// Opens the Git repository in the current working directory and uses the
