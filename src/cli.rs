@@ -19,19 +19,19 @@ commit and a Git tag are both created."#;
 #[command(next_line_help = true)]
 #[command(name = "cargo", author, version, about, long_about = Some(ABOUT))]
 pub enum Cli {
+    Tag(TagArgs),
+}
+
+#[derive(clap::Args, Debug)]
+pub struct TagArgs {
     #[command(subcommand)]
-    Tag(Command),
+    pub command: Command,
+
+    #[arg(long)]
+    pub env: bool,
 }
 
-impl Cli {
-    pub fn exec(self) -> Result<(), Box<dyn std::error::Error>> {
-        match self {
-            Self::Tag(cmd) => cmd.exec(),
-        }
-    }
-}
-
-#[derive(Clone, Subcommand)]
+#[derive(Clone, Subcommand, Debug)]
 pub enum Command {
     /// Print current package version
     Current,
@@ -44,7 +44,7 @@ pub enum Command {
 }
 
 impl Command {
-    pub fn exec(&self) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn exec(&self, env: bool) -> Result<(), Box<dyn std::error::Error>> {
         match *self {
             Command::Current => {
                 let cargo_toml = CargoToml::open().unwrap();
@@ -53,7 +53,11 @@ impl Command {
             }
             Command::Major | Command::Minor | Command::Patch => {
                 let cargo_toml = CargoToml::open()?;
-                let repository = Git::from_env("main");
+                let repository = if env {
+                    Git::from_env("main")
+                } else {
+                    Git::from_git_config("main")
+                };
                 let mut version = Version::from(&cargo_toml.package.version);
 
                 match self {
